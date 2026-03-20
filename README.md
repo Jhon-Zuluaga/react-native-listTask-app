@@ -6,10 +6,10 @@ Aplicación móvil de gestión de tareas desarrollada con React Native y Expo, a
 
 ## 🛠️ Requisitos 
 
-Para poder utilizar este software neesitarás: 
+Para poder utilizar este software necesitarás: 
 
+- React Native CLI o Expo CLI
 - Node.js 18+
-- Expo CLI
 - Expo Go o emulador Android/iOS
 - Cuenta en [expo.dev](https://expo.dev) (opcional, para builds)
 
