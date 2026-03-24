@@ -16,14 +16,23 @@ type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
 
+/**
+ * Pantalla de inicio de sesión
+ */
 export const LoginScren = ({ navigation }: Props) => {
+
+  // Detectar modo oscuro
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
+  // Estado de inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Estado y acciones del store
   const { login, isLoading, error } = useAuthStore();
 
+  // Manejar login
   const handleLogin = async () => {
     const success = await login(email, password);
     if (!success && error) Alert.alert("Error", error);
@@ -34,6 +43,7 @@ export const LoginScren = ({ navigation }: Props) => {
       <Text style={loginStyle.title}>Bienvenido!</Text>
       <Text style={loginStyle.subtitle}>Inicia sesión para continuar</Text>
 
+      {/* Input email */}
       <TextInput
         style={[
           loginStyle.input,
@@ -51,6 +61,7 @@ export const LoginScren = ({ navigation }: Props) => {
         autoCapitalize="none"
       />
 
+      {/* Input contraseña */}
       <TextInput
         style={[
           loginStyle.input,
@@ -67,8 +78,11 @@ export const LoginScren = ({ navigation }: Props) => {
         secureTextEntry
       />
 
+      {/* Mostrar error */}
       {error && <Text style={loginStyle.error}>{error}</Text>}
+      
 
+      {/* Botón login */}
       <TouchableOpacity
         style={loginStyle.button}
         onPress={handleLogin}
@@ -80,7 +94,8 @@ export const LoginScren = ({ navigation }: Props) => {
           <Text style={loginStyle.buttonText}>Iniciar sesión</Text>
         )}
       </TouchableOpacity>
-
+        
+      {/* Navegar a registro */}
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text
           style={[loginStyle.link, { color: isDark ? "#a89cf7" : "#534AB7" }]}

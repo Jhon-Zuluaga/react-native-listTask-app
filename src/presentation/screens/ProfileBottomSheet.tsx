@@ -23,13 +23,23 @@ interface Props {
   onClose: () => void;
 }
 
+
+/** 
+ * BottomSheet de perfil de usuario (editar datos)
+ */
 export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
+
+  // Tema (dark / light)
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+
+  // Estado global
   const { user, updateProfile } = useAuthStore();
 
+  // Animación del sheet
   const slideAnim = useRef(new Animated.Value(height)).current;
 
+  // Estado de edición
   const [editingField, setEditingField] = useState<
     "name" | "email" | "password" | null
   >(null);
@@ -39,6 +49,8 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
 
   const c = getProfileColors(isDark);
 
+
+  // Animar apertura / cierre
   useEffect(() => {
     if (visible) {
       Animated.spring(slideAnim, {
@@ -56,6 +68,8 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
     }
   }, [visible]);
 
+
+  // Guardar cambios
   const handleSave = async () => {
     if (!newValue.trim()) return;
     setIsLoading(true);
@@ -97,12 +111,13 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
         activeOpacity={1}
         onPress={onClose}
       />
+      {/* Ajuste para teclado */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ position: 'absolute', bottom: 0, left: 0, right : 0}}
       >
 
-      {/* Sheet */}
+      {/* Bottom Sheet */}
       <Animated.View
         style={[
           profileStyle.sheet,
@@ -121,7 +136,7 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
             Mi perfil
           </Text>
 
-          {/* Avatar */}
+          {/* Info usuario */}
           <View style={profileStyle.avatarContainer}>
             <View style={profileStyle.avatar}>
               <Text style={profileStyle.avatarText}>
@@ -141,7 +156,7 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
             style={[profileStyle.separator, { backgroundColor: c.border }]}
           />
 
-          {/* Campos */}
+          {/* Campos editables */}
           {(["name", "email", "password"] as const).map((field) => (
             <View key={field}>
               <View
@@ -201,6 +216,8 @@ export const ProfileBottomSheet = ({ visible, onClose }: Props) => {
                     autoFocus
                     autoCapitalize="none"
                   />
+
+                  {/* Acciones */}
                   <View style={profileStyle.editActions}>
                     <TouchableOpacity
                       style={profileStyle.cancelEditBtn}

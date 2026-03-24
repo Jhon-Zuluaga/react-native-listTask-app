@@ -1,18 +1,31 @@
 import { ITaskRepository } from "../../ports/ITaskRepository";
 
+/*
+ * Resultado de cambiar estado de tarea ( completada / no completada )
+ */
 export type ToggleResult =
-    | { success: true }
-    | { success: false; error: 'TASK_NOT_FOUND'};
+  | { success: true }
+  | { success: false; error: "TASK_NOT_FOUND" };
 
-export class ToggleTasksCase{
-    constructor(private taskRepository: ITaskRepository) {}
+/*
+ * Caso de uso: Alternar estado de una tarea
+ */
+export class ToggleTasksCase {
 
-    async execute(userId: string, taskId: string, currentTasks: 
-        import('../../entities/Task').Task[]): Promise<ToggleResult> {
-            const task = currentTasks.find(t => t.id === taskId);
-            if(!task) return { success: false, error: 'TASK_NOT_FOUND'};
+  // Inyección del repositorio
+  constructor(private taskRepository: ITaskRepository) {}
 
-            await this.taskRepository.update({... task, completed: !task.completed});
-            return { success: true};
-        }
-}    
+  async execute(
+    taskId: string,
+    currentTasks: import("../../entities/Task").Task[],
+  ): Promise<ToggleResult> {
+
+    // Buscar tarea
+    const task = currentTasks.find((t) => t.id === taskId);
+    if (!task) return { success: false, error: "TASK_NOT_FOUND" };
+
+    // Cambiar estado (true - false)
+    await this.taskRepository.update({ ...task, completed: !task.completed });
+    return { success: true };
+  }
+}

@@ -1,3 +1,7 @@
+/**
+ * Modelo Task del sistema.
+ */
+
 export interface Task{
     readonly id: string;
     userId: string;
@@ -6,7 +10,10 @@ export interface Task{
     createdAt: Date;
 }
 
-// Regla de negocio: el titulo no puede estar vacio
+/* Validación el título de una tarea
+* - No vacío
+* - Máximo 100 caracteres
+*/ 
 export const isValidTaskTitle = (title: string): boolean => {
     return title.trim().length > 0 && title.trim().length <= 100
 };

@@ -17,7 +17,13 @@ import { generateTasksPDFTemplate } from "../templates/TasksPdfTemplate";
 import { profileStyle } from "../../../styles/profileStyle";
 import { ProfileBottomSheet } from "./ProfileBottomSheet";
 
+
+/**
+ * Pantalla principal de tareas
+ */
 export const TasksScreen = () => {
+
+  // Estado global (auth y tareas)
   const { user, logout } = useAuthStore();
   const {
     tasks,
@@ -28,25 +34,31 @@ export const TasksScreen = () => {
     deletedTask,
     editTask,
   } = useTaskStore();
+
+  // Estado local
   const [newTitle, setNewTitle] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [showProfile, setShowProfile] = useState(false);
 
+  // Cargar tareas al iniciar
   useEffect(() => {
     if (user) loadTasks(user.id);
   }, [user]);
 
+  // Crear tarea
   const handleCreate = async () => {
     if (!user || !newTitle.trim()) return;
     await createTask(user.id, newTitle);
     setNewTitle("");
   };
 
+  // Marcar / desmarcar tarea
   const handleToggle = (taskId: string) => {
     if (user) toggleTask(user.id, taskId);
   };
 
+  // Eliminar tarea
   const handleDelete = (taskId: string) => {
     Alert.alert(
       "Eliminar tarea",
@@ -62,11 +74,13 @@ export const TasksScreen = () => {
     );
   };
 
+  // Iniciar edición
   const handleStartEdit = (taskId: string, currentTitle: string) => {
     setEditingId(taskId);
     setEditingText(currentTitle);
   };
 
+  // Guardar edición
   const handleSaveEdit = async () => {
     if (!editingId || !editingText.trim()) return;
     await editTask(editingId, editingText);
@@ -74,11 +88,13 @@ export const TasksScreen = () => {
     setEditingText("");
   };
 
+  // Cancelar edición
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditingText("");
   };
 
+  // Exportar tareas a PDF
   const handleExportPDF = async () => {
     try {
       const html = generateTasksPDFTemplate({
@@ -103,11 +119,15 @@ export const TasksScreen = () => {
         <View>
           <Text style={taskStyle.title}>Mis tareas</Text>
           <Text style={taskStyle.subtitle}>Hola, {user?.name} 🙌</Text>
+
+          {/* Conrtador */}
           <Text style={taskStyle.counter}>
               {tasks.filter(t => !t.completed).length} Pendientes • 
               {tasks.filter(t => t.completed).length} Completadas
           </Text>
         </View>
+
+        {/* Acciones */}
         <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
           <TouchableOpacity onPress={handleExportPDF} style={taskStyle.pdfBtn}>
             <Text style={taskStyle.pdfBtnText}>📄 PDF</Text>
@@ -118,6 +138,7 @@ export const TasksScreen = () => {
         </View>
       </View>
 
+      {/* Crear tarea */}
       <View style={taskStyle.inputRow}>
         <TextInput
           style={taskStyle.input}
@@ -131,6 +152,7 @@ export const TasksScreen = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Lista de tareas*/}
       {isLoading ? (
         <ActivityIndicator color="#534AB7" style={{ marginTop: 32 }} />
       ) : (
@@ -139,6 +161,7 @@ export const TasksScreen = () => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={taskStyle.taskItem}>
+              {/* Checkbox */}
               <TouchableOpacity
                 style={[
                   taskStyle.checkbox,
@@ -148,7 +171,8 @@ export const TasksScreen = () => {
               >
                 {item.completed && <Text style={taskStyle.checkmark}>✓</Text>}
               </TouchableOpacity>
-
+              
+               {/* Título o input de edición */}
               {editingId === item.id ? (
                 <TextInput
                   style={taskStyle.editInput}
@@ -168,6 +192,7 @@ export const TasksScreen = () => {
                 </Text>
               )}
 
+              {/* Acciones */}
               <View style={taskStyle.actions}>
                 {editingId === item.id ? (
                   // Modo edición: guardar y cancelar
@@ -186,7 +211,7 @@ export const TasksScreen = () => {
                     </TouchableOpacity>
                   </>
                 ) : (
-                  // Modo normal: editar y eliminar
+                  
                   <>
                     <TouchableOpacity
                       style={taskStyle.editBtn}
@@ -210,7 +235,7 @@ export const TasksScreen = () => {
           }
         />
       )}
-      {/* botón flotante abajo izquierda */}
+      {/* Botón perfil */}
       <TouchableOpacity
         onPress={() => setShowProfile(true)}
         style={profileStyle.settingsBtn}
@@ -218,6 +243,7 @@ export const TasksScreen = () => {
       >
         <Text style={profileStyle.settingsBtnText}>⚙️</Text>
       </TouchableOpacity>
+        {/* BottomSheet profile */}
       <ProfileBottomSheet
         visible={showProfile}
         onClose={() => setShowProfile(false)}

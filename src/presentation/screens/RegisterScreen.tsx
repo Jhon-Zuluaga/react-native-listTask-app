@@ -15,15 +15,25 @@ type Props = {
   navigation: any;
 };
 
+
+/**
+ * Pantalla de registro de usuario 
+ */
 export const RegisterScreen = ({ navigation }: Props) => {
+
+  // Tema (dark / light)
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
+  // Estado de inputs
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Estado y acciones del store
   const { register, isLoading, error } = useAuthStore();
 
+  // Manejar registro
   const handleRegister = async () => {
     const success = await register(name, email, password);
     if (!success && error) Alert.alert("Error", error);
@@ -47,6 +57,7 @@ export const RegisterScreen = ({ navigation }: Props) => {
         Únete para empezar!
       </Text>
 
+      {/* Input nombre */}
       <TextInput
         style={[
           registerStyle.input,
@@ -61,6 +72,8 @@ export const RegisterScreen = ({ navigation }: Props) => {
         value={name}
         onChangeText={setName}
       />
+
+      {/* Input nombre */}
       <TextInput
         style={[
           registerStyle.input,
@@ -77,6 +90,8 @@ export const RegisterScreen = ({ navigation }: Props) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
+
+      {/* Input nombre */}
       <TextInput
         style={[
           registerStyle.input,
@@ -93,6 +108,7 @@ export const RegisterScreen = ({ navigation }: Props) => {
         secureTextEntry
       />
 
+      {/* Mostrar error */}
       {error && <Text style={registerStyle.error}>{error}</Text>}
 
       <TouchableOpacity
@@ -106,7 +122,8 @@ export const RegisterScreen = ({ navigation }: Props) => {
           <Text style={registerStyle.buttonText}>Registrarse</Text>
         )}
       </TouchableOpacity>
-
+      
+      {/* Volver al login */}
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text
           style={[
